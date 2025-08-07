@@ -1,32 +1,44 @@
 import pygame
 from constants import *
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 def main():
-    print("Starting Asteroids!")
-    print(f"Screen width: {SCREEN_WIDTH}")
-    print(f"Screen height: {SCREEN_HEIGHT}")
     pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    clock = pygame.time.Clock()
 
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # Set the screen size
-    clock = pygame.time.Clock() # Create a clock to manage frame rate
-    dt = 0 # Delta time for smooth movement
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2) # Create a player instance
-    updatable = pygame.sprite.Group(player) # Group for updating sprites
-    drawable = pygame.sprite.Group(player) # Group for drawing sprites
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
 
+    Asteroid.containers = (asteroids, updatable, drawable) # Asteroid objects will be added to these groups
+    AsteroidField.containers = updatable # AsteroidField will update itself
+    asteroid_field = AsteroidField() # Create an instance of AsteroidField
+
+    Player.containers = (updatable, drawable) # Player objects will be added to these groups
+
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2) # Create a player at the center of the screen
+
+    dt = 0 # Initialize delta time
 
     while True:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT: # Exit the game and kill the process when the window is closed
                 return
-            
+
+        updatable.update(dt)
+
         screen.fill("black")
-        updatable.update(dt) # Update all updatable sprites
+
         for sprite in drawable:
-            sprite.draw(screen) # Draw all drawable sprites
+            sprite.draw(screen)
+
         pygame.display.flip() # Update the display
-        dt = clock.tick(60) / 1000 # limit the framerate to 60 FPS
+
+        # limit the framerate to 60 FPS
+        dt = clock.tick(60) / 1000
 
 if __name__ == "__main__":
     main()
