@@ -8,24 +8,21 @@ def main():
     print(f"Screen height: {SCREEN_HEIGHT}")
     pygame.init()
 
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    clock = pygame.time.Clock()
-    dt = 0
-
-    # Create a player instance
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # Set the screen size
+    clock = pygame.time.Clock() # Create a clock to manage frame rate
+    dt = 0 # Delta time for smooth movement
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2) # Create a player instance
 
     while True:
-        screen.fill("black", rect=None, special_flags=0)
-
-        player.draw(screen)
-
-        pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-        clock.tick(60)
-        dt += clock.tick(60) / 1000.0  # Convert milliseconds to seconds
+            
+        screen.fill("black")
+        player.draw(screen) # Draw the player
+        player.update(dt) # Update the player based on input and time
+        pygame.display.flip() # Update the display
+        dt = clock.tick(60) / 1000 # limit the framerate to 60 FPS
 
 if __name__ == "__main__":
     main()
