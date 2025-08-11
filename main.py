@@ -4,6 +4,8 @@ from constants import *
 from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
+from shot import Shot
+
 
 def main():
     pygame.init()
@@ -13,20 +15,22 @@ def main():
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
 
-    Asteroid.containers = (asteroids, updatable, drawable) # Asteroid objects will be added to these groups
-    AsteroidField.containers = updatable # AsteroidField will update itself
-    asteroid_field = AsteroidField() # Create an instance of AsteroidField
+    Asteroid.containers = (asteroids, updatable, drawable)
+    Shot.containers = (shots, updatable, drawable)
+    AsteroidField.containers = updatable
+    asteroid_field = AsteroidField()
 
-    Player.containers = (updatable, drawable) # Player objects will be added to these groups
+    Player.containers = (updatable, drawable)
 
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2) # Create a player at the center of the screen
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
-    dt = 0 # Initialize delta time
+    dt = 0
 
     while True:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT: # Exit the game and kill the process when the window is closed
+            if event.type == pygame.QUIT:
                 return
 
         updatable.update(dt)
@@ -38,13 +42,14 @@ def main():
 
         screen.fill("black")
 
-        for sprite in drawable:
-            sprite.draw(screen)
+        for obj in drawable:
+            obj.draw(screen)
 
-        pygame.display.flip() # Update the display
+        pygame.display.flip()
 
         # limit the framerate to 60 FPS
         dt = clock.tick(60) / 1000
+
 
 if __name__ == "__main__":
     main()
